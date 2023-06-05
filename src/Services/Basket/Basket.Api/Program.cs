@@ -1,8 +1,10 @@
 
 using Basket.Api.GrpcServices;
+using Basket.Api.Mapper;
 using Basket.Api.Repositories;
 using Discount.Grpc.Protos;
 using Grpc.Net.Client.Configuration;
+using MassTransit;
 using static Discount.Grpc.Protos.DiscountProtoService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
     (o=>o.Address=new Uri("http://localhost:5003"));
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(BasketProfile));
 
 // builder.Services.AddGrpcClient<DiscountProtoServiceClient>(o => { 
 //     o.Address = new Uri("https://localhost:5003");
@@ -23,7 +27,14 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
 
 
 builder.Services.AddScoped<DiscountGrpcService>();
-
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.UsingRabbitMq((ctx, rcfg) =>
+    {
+        rcfg.Host("amqp://guest:guest@localhost:5672");
+    });
+});
+//builder.Services.AddMassTransitHostedService();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

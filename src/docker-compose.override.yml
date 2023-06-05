@@ -35,7 +35,16 @@ services:
     restart: always
     ports:
         - "1433:1433"
-        
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 
 
   pgadmin:
@@ -104,13 +113,7 @@ services:
       - "8003:80"
 
 
-  ordering.api:
-    container_name: ordering.api
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionString:OrderingConnectionString=Server=localhost;Database=OrderDb;User Id=sa;Password=SwN12345678;Encrypt=False;" 
-    depends_on:
-       - orderdb
-    ports:
-      - "80"
-
+  
+networks:
+  default:
+    driver: bridge

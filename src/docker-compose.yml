@@ -9,6 +9,8 @@ services:
     image: postgres
   orderdb:
     image: mcr.microsoft.com/mssql/server:2022-latest
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
   pgadmin:
     image: dpage/pgadmin4
   portainer:
@@ -37,18 +39,11 @@ services:
       context: .
       dockerfile: Services/Discount/Discount.Grpc/Dockerfile
 
-  ordering.api:
-    image: ${DOCKER_REGISTRY-}orderingapi
-    build:
-      context: .
-      dockerfile: Services/Ordering/Ordering.API/Dockerfile
+  
 
 volumes:
   mongo_data: 
   portainer_data:
   postgres_data:
   pgadmin_data:
-
-
-
 

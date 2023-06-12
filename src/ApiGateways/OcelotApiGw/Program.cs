@@ -11,11 +11,12 @@ public class Program
         Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
-                config.AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true);
+                config.AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json"
+                    , true, true);
             })
-           // .UseSerilog(SeriLogger.Configure)
+            // .UseSerilog(SeriLogger.Configure)
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-            });        
+            });
 }
